@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\CodeChallenge.props" />
+</Project>

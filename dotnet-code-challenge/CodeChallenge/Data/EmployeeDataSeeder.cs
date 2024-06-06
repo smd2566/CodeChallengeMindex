@@ -38,9 +38,14 @@ namespace CodeChallenge.Data
                 JsonSerializer serializer = new JsonSerializer();
 
                 List<Employee> employees = serializer.Deserialize<List<Employee>>(jr);
+                
+                
                 FixUpReferences(employees);
 
+                
                 return employees;
+
+                
             }
         }
 
@@ -63,6 +68,8 @@ namespace CodeChallenge.Data
                     employee.DirectReports = referencedEmployees;
                 }
             });
+            
+
         }
     }
 }

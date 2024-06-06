@@ -37,7 +37,10 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received employee get request for '{id}'");
 
+            
+
             var employee = _employeeService.GetById(id);
+
 
             if (employee == null)
                 return NotFound();

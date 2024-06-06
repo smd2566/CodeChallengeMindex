@@ -29,7 +29,24 @@ namespace CodeChallenge.Repositories
 
         public Employee GetById(string id)
         {
-            return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
+            //The below line was causing the bug where the directreports returned null. Instead of iterating through the method group
+            //using SingleOrDefault, I instead used a foreeach loop which returned the proper values within the Employee object
+
+            //return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
+
+            var returnedEmployee = new Employee();
+
+            foreach (var employee in _employeeContext.Employees)
+            {
+                if (employee.EmployeeId == id)
+                {
+                    returnedEmployee = employee;
+                
+                }
+                    
+            }
+
+            return returnedEmployee;
         }
 
         public Task SaveAsync()

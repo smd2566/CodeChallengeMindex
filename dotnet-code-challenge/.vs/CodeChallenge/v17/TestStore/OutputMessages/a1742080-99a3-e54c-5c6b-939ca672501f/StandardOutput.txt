@@ -1,0 +1,47 @@
+fail: Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.InvalidOperationException: The entity type 'Compensation' requires a primary key to be defined. If you intended to use a keyless entity type, call 'HasNoKey' in 'OnModelCreating'. For more information on keyless entity types, see https://go.microsoft.com/fwlink/?linkid=2141943.
+         at Microsoft.EntityFrameworkCore.Infrastructure.ModelValidator.ValidateNonNullPrimaryKeys(IModel model, IDiagnosticsLogger`1 logger)
+         at Microsoft.EntityFrameworkCore.Infrastructure.ModelValidator.Validate(IModel model, IDiagnosticsLogger`1 logger)
+         at Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal.InMemoryModelValidator.Validate(IModel model, IDiagnosticsLogger`1 logger)
+         at Microsoft.EntityFrameworkCore.Infrastructure.ModelRuntimeInitializer.Initialize(IModel model, Boolean designTime, IDiagnosticsLogger`1 validationLogger)
+         at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+         at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+         at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+         at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at ResolveService(ILEmitResolverBuilderRuntimeContext , ServiceProviderEngineScope )
+         at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+         at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+         at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+         at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+         at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+         at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+         at Microsoft.EntityFrameworkCore.DbContext.get_InternalServiceProvider()
+         at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+         at Microsoft.EntityFrameworkCore.DbContext.Microsoft.EntityFrameworkCore.Internal.IDbContextDependencies.get_StateManager()
+         at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.EntryWithoutDetectChanges(TEntity entity)
+         at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.Add(TEntity entity)
+         at CodeChallenge.Repositories.CompensationRepository.Add(Compensation compensation) in C:\Users\Shane Doherty\source\repos\CodeChallengeMindex\dotnet-code-challenge\CodeChallenge\Repositories\CompensationRepository.cs:line 26
+         at CodeChallenge.Services.CompensationService.Create(Compensation compensation) in C:\Users\Shane Doherty\source\repos\CodeChallengeMindex\dotnet-code-challenge\CodeChallenge\Services\CompensationService.cs:line 26
+         at CodeChallenge.Controllers.CompensationController.CreateCompensation(Compensation compensation) in C:\Users\Shane Doherty\source\repos\CodeChallengeMindex\dotnet-code-challenge\CodeChallenge\Controllers\CompensationController.cs:line 30
+         at lambda_method127(Closure , Object , Object[] )
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+         at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
