@@ -64,7 +64,15 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(reportingStructurePeteBest.NumberOfReports, 0);
 
 
-            
+
+        }
+
+        [TestMethod]
+        public void GetReportingStructureById_Returns_NotFound()
+        {
+            var response = _httpClient.GetAsync("api/reportingStructure/Invalid_Id").Result;
+
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

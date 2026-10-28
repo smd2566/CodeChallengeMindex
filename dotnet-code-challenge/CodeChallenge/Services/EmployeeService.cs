@@ -8,6 +8,10 @@ using CodeChallenge.Repositories;
 
 namespace CodeChallenge.Services
 {
+    /// <summary>
+    /// Business logic for employees. Sits between the controller and the repository; it guards against null/empty input
+    /// and makes sure changes are saved after the repository stages them.
+    /// </summary>
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -19,28 +23,34 @@ namespace CodeChallenge.Services
             _logger = logger;
         }
 
-        public Employee Create(Employee employee)
+        /// <summary>Adds the employee to the database and saves. The repository assigns the new EmployeeId. Null input is ignored.</summary>
+        public async Task<Employee> CreateAsync(Employee employee)
         {
             if(employee != null)
             {
                 _employeeRepository.Add(employee);
-                _employeeRepository.SaveAsync().Wait();
+                await _employeeRepository.SaveAsync();
             }
 
             return employee;
         }
 
-        public Employee GetById(string id)
+        /// <summary>Looks up an employee by id. Returns null for a null/empty id or when no employee matches.</summary>
+        public async Task<Employee> GetByIdAsync(string id)
         {
             if(!String.IsNullOrEmpty(id))
             {
-                return _employeeRepository.GetById(id);
+                return await _employeeRepository.GetByIdAsync(id);
             }
 
             return null;
         }
 
-        public Employee Replace(Employee originalEmployee, Employee newEmployee)
+        /// <summary>
+        /// Replaces an employee by deleting the original and inserting the new one under the original's id.
+        /// If newEmployee is null the original is simply deleted. Does nothing if originalEmployee is null.
+        /// </summary>
+        public async Task<Employee> ReplaceAsync(Employee originalEmployee, Employee newEmployee)
         {
             if(originalEmployee != null)
             {
@@ -48,13 +58,13 @@ namespace CodeChallenge.Services
                 if (newEmployee != null)
                 {
                     // ensure the original has been removed, otherwise EF will complain another entity w/ same id already exists
-                    _employeeRepository.SaveAsync().Wait();
+                    await _employeeRepository.SaveAsync();
 
                     _employeeRepository.Add(newEmployee);
                     // overwrite the new id with previous employee id
                     newEmployee.EmployeeId = originalEmployee.EmployeeId;
                 }
-                _employeeRepository.SaveAsync().Wait();
+                await _employeeRepository.SaveAsync();
             }
 
             return newEmployee;

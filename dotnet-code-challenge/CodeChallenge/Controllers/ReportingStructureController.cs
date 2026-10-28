@@ -12,6 +12,10 @@ namespace CodeChallenge.Controllers
 {
     [ApiController]
     [Route("api/reportingStructure")]
+    /// <summary>
+    /// Read-only endpoint (api/reportingStructure) for the Task 1 requirement: how many people report, directly or indirectly,
+    /// to a given employee. Nothing is stored; the result is calculated on every request.
+    /// </summary>
     public class ReportingStructureController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -23,16 +27,19 @@ namespace CodeChallenge.Controllers
             _employeeService = employeeService;
         }
 
-        
+        /// <summary>
+        /// GET api/reportingStructure/{employeeId} - returns the employee together with the total number of reports beneath them.
+        /// Returns 404 if the employee does not exist.
+        /// </summary>
         [HttpGet("{employeeId}", Name = "getReportingStructureById")]
-        public IActionResult GetReportingStructureById(String employeeId)
+        public async Task<IActionResult> GetReportingStructureById(String employeeId)
         {
             
 
             _logger.LogDebug($"Received reporting structure get request for '{employeeId}'");
 
             var reportingStructure = new ReportingStructure(); //creating a new ReportingStructureObject to be returned
-            var employee = _employeeService.GetById(employeeId);
+            var employee = await _employeeService.GetByIdAsync(employeeId);
 
             
 
@@ -50,6 +57,10 @@ namespace CodeChallenge.Controllers
             return Ok(reportingStructure);
         }
 
+        /// <summary>
+        /// Counts everyone below the given employee: their direct reports plus, recursively, each of those people's reports.
+        /// The employee themself is not counted. Employees with no direct reports (null or empty list) return 0.
+        /// </summary>
         //I created a recursive helper method here to account for any number of employees that report to the base employee
         public static int TraverseDirectReports(Employee employee)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CodeChallenge.Models
 {
     //new model "Compensation"
-    
+    /// <summary>The salary and effective date for one employee. Stored in the compensation database, keyed by EmployeeId.</summary>
     public class Compensation
     {
         //Im matching the UpperCase structure of the Employee model for consistency
@@ -17,7 +17,7 @@ namespace CodeChallenge.Models
 
         public Employee Employee { get; set; }
        
-        public float Salary { get; set; }
+        public decimal Salary { get; set; } //decimal rather than float so amounts with cents are stored exactly
 
         public String EffectiveDate { get; set; } //Making this a String as the JSON Serializer does not support a "DateOnly" datatype
 

@@ -84,12 +84,34 @@ namespace CodeCodeChallenge.Tests.Integration
         }
 
         [TestMethod]
+        public void GetEmployeeById_Returns_NotFound()
+        {
+            // Execute
+            var response = _httpClient.GetAsync("api/employee/Invalid_Id").Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [TestMethod]
         public void UpdateEmployee_Returns_Ok()
         {
             // Arrange
+            // Create a dedicated employee to update, so the seeded employees other tests rely on are left untouched
+            var createContent = new JsonSerialization().ToJson(new Employee()
+            {
+                Department = "Engineering",
+                FirstName = "Temp",
+                LastName = "Employee",
+                Position = "Developer I",
+            });
+            var createResponse = _httpClient.PostAsync("api/employee",
+               new StringContent(createContent, Encoding.UTF8, "application/json")).Result;
+            var createdEmployee = createResponse.DeserializeContent<Employee>();
+
             var employee = new Employee()
             {
-                EmployeeId = "03aa1462-ffa9-4978-901b-7c001562cf6f",
+                EmployeeId = createdEmployee.EmployeeId,
                 Department = "Engineering",
                 FirstName = "Pete",
                 LastName = "Best",

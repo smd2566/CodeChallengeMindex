@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CodeChallenge.Data
 {
+    /// <summary>Entity Framework context for the compensation database, kept separate from <see cref="EmployeeContext"/>.</summary>
     public class CompensationContext : DbContext
     {
         public CompensationContext(DbContextOptions<CompensationContext> options) : base(options)
@@ -14,6 +15,7 @@ namespace CodeChallenge.Data
 
         }
 
+        /// <summary>All compensation records, keyed by EmployeeId (one compensation per employee).</summary>
         public DbSet<Compensation> Compensations { get; set; }
     }
 }

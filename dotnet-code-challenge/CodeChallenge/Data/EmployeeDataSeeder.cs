@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace CodeChallenge.Data
 {
+    /// <summary>
+    /// Populates the employee database at startup from a JSON snapshot file.
+    /// Changes made while the app runs are never written back to that file.
+    /// </summary>
     public class EmployeeDataSeeder
     {
         private EmployeeContext _employeeContext;
@@ -18,6 +22,7 @@ namespace CodeChallenge.Data
             _employeeContext = employeeContext;
         }
 
+        /// <summary>Loads and saves the seed employees, but only if the database is empty (so it is safe to call more than once).</summary>
         public async Task Seed()
         {
             if(!_employeeContext.Employees.Any())
@@ -29,6 +34,7 @@ namespace CodeChallenge.Data
             }
         }
 
+        /// <summary>Reads the seed JSON file into a list of employees and resolves their direct-report references.</summary>
         private List<Employee> LoadEmployees()
         {
             using (FileStream fs = new FileStream(EMPLOYEE_SEED_DATA_FILE, FileMode.Open))
@@ -49,6 +55,10 @@ namespace CodeChallenge.Data
             }
         }
 
+        /// <summary>
+        /// In the JSON file each direct report is just a stub containing an employeeId. This replaces every stub with the
+        /// full Employee object from the list, so the reporting hierarchy is a real object graph that EF can store.
+        /// </summary>
         private void FixUpReferences(List<Employee> employees)
         {
             var employeeIdRefMap = from employee in employees

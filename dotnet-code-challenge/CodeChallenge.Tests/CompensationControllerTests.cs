@@ -40,19 +40,19 @@ namespace CodeCodeChallenge.Tests.Integration
             // Creating a fake employee based on EmployeeControllerTests.cs
             var employee = new Employee()
             {
-                EmployeeId = "17a576be-bgd3-4877-91fe-c4618i82c86f",
+                EmployeeId = Guid.NewGuid().ToString(), //unique per test so tests sharing the in-memory database do not collide <- AI bug fix
                 Department = "Complaints",
                 FirstName = "Debbie",
                 LastName = "Downer",
                 Position = "Receiver",
             };
 
-            
+
             var compensation = new Compensation()
             {
                 EmployeeId = employee.EmployeeId,
                 Employee = employee,
-                Salary = (float)75000.00,
+                Salary = 75000.55m,
                 EffectiveDate = "1/11/2000",
 
             };
@@ -88,25 +88,74 @@ namespace CodeCodeChallenge.Tests.Integration
         }
 
         [TestMethod]
+        public void CreateCompensation_Returns_Conflict_ForDuplicateEmployee()
+        {
+            var employee = new Employee()
+            {
+                EmployeeId = Guid.NewGuid().ToString(),
+                Department = "Complaints",
+                FirstName = "Debbie",
+                LastName = "Downer",
+                Position = "Receiver",
+            };
+            var compensation = new Compensation()
+            {
+                EmployeeId = employee.EmployeeId,
+                Employee = employee,
+                Salary = 75000.55m,
+                EffectiveDate = "1/11/2000",
+            };
+            var requestContent = new JsonSerialization().ToJson(compensation);
+
+            var first = _httpClient.PostAsync("api/compensation",
+               new StringContent(requestContent, Encoding.UTF8, "application/json")).Result;
+            var second = _httpClient.PostAsync("api/compensation",
+               new StringContent(requestContent, Encoding.UTF8, "application/json")).Result;
+
+            Assert.AreEqual(HttpStatusCode.Created, first.StatusCode);
+            Assert.AreEqual(HttpStatusCode.Conflict, second.StatusCode);
+        }
+
+        [TestMethod]
+        public void CreateCompensation_Returns_BadRequest_WhenEmployeeMissing()
+        {
+            //No nested employee and no employeeId
+            var requestContent = "{ \"salary\": 75000.55, \"effectiveDate\": \"1/11/2000\" }";
+
+            var response = _httpClient.PostAsync("api/compensation",
+               new StringContent(requestContent, Encoding.UTF8, "application/json")).Result;
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetCompensationById_Returns_NotFound()
+        {
+            var response = _httpClient.GetAsync($"api/compensation/{Guid.NewGuid()}").Result;
+
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [TestMethod]
         public void GetCompensationById_Returns_Ok()
         {
 
             // Creating a fake employee based on the EmployeeControllerTests.cs
             var employee = new Employee()
             {
-                EmployeeId = "17a576be-bgd3-4877-91fe-c4618i82c86f",
+                EmployeeId = Guid.NewGuid().ToString(), //unique per test so tests sharing the in-memory database do not collide <- AI bug fix
                 Department = "Complaints",
                 FirstName = "Debbie",
                 LastName = "Downer",
                 Position = "Receiver",
             };
 
-            
+
             var compensation = new Compensation()
             {
                 EmployeeId = employee.EmployeeId,
                 Employee = employee,
-                Salary = (float)75000.00,
+                Salary = 75000.55m,
                 EffectiveDate = "1/11/2000",
 
             };
@@ -127,7 +176,7 @@ namespace CodeCodeChallenge.Tests.Integration
 
             // Arrange
             var employeeId = employee.EmployeeId;
-            var expectedSalary = (float)75000.00;
+            var expectedSalary = 75000.55m;
             var expectedEffectiveDate = "1/11/2000";
 
             // Execute
@@ -138,11 +187,12 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             var returnedCompensation = response.DeserializeContent<Compensation>();
-            //This test is commented out because the returnedCompensation's Employee field is returned as NULL. When the compensation gets added to
-            //the _compensationContext.Compensations, every value is transferred properly except the Employee field, which gets transferred as null.
-            //More details of this bug are listed in CompensationRepository.cs
 
-            //Assert.AreEqual(employee, returnedCompensation.Employee);
+            //Employee does not override Equals, so compare its fields rather than the object references
+            Assert.IsNotNull(returnedCompensation.Employee);
+            Assert.AreEqual(employee.EmployeeId, returnedCompensation.Employee.EmployeeId);
+            Assert.AreEqual(employee.FirstName, returnedCompensation.Employee.FirstName);
+            Assert.AreEqual(employee.LastName, returnedCompensation.Employee.LastName);
             Assert.AreEqual(employeeId, returnedCompensation.EmployeeId);
             Assert.AreEqual(expectedSalary, returnedCompensation.Salary);
             Assert.AreEqual(expectedEffectiveDate, returnedCompensation.EffectiveDate);

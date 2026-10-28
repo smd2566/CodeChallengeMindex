@@ -1,0 +1,15 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio local state
+.vs/
+*.suo
+*.user
+
+# Test output
+TestResults/
+
+# NuGet packages
+*.nupkg
+packages/
